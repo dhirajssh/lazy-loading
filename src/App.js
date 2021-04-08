@@ -53,6 +53,7 @@ function App() {
         setPage(page + 1);
         setProfiles([...profiles,JSON.parse(result)]);
         setLoading(false);
+        setLoadings(false);
       }
       catch(error){
         console.log(error);
