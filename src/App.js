@@ -5,7 +5,7 @@ import Header from './components/Header';
 import Loader from './components/Loader';
 
 function App() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [loadings, setLoadings] = useState(false);
   const [profiles, setProfiles] = useState([]);
   const [page, setPage] = useState(1);
@@ -37,6 +37,7 @@ function App() {
       try{
         console.log("here");
         if(page > 10){
+          setLoadings(false);
           return;
         }
         const myHeaders = new Headers();
@@ -52,7 +53,6 @@ function App() {
         setPage(page + 1);
         setProfiles([...profiles,JSON.parse(result)]);
         setLoading(false);
-        setLoadings(false);
       }
       catch(error){
         console.log(error);
