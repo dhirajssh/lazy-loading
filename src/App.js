@@ -5,7 +5,8 @@ import Header from './components/Header';
 import Loader from './components/Loader';
 
 function App() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [loadings, setLoadings] = useState(false);
   const [profiles, setProfiles] = useState([]);
   const [page, setPage] = useState(1);
   const [isFetching, setIsFetching] = useState(false);
@@ -31,28 +32,32 @@ function App() {
   },[isFetching])
 
   const fetchData = async ()=>{
-    try{
-      console.log("here");
-      if(page > 10){
-        return;
+    setLoadings(true);
+    setTimeout(async()=>{
+      try{
+        console.log("here");
+        if(page > 10){
+          return;
+        }
+        const myHeaders = new Headers();
+        myHeaders.append("Cookie", "__cfduid=d8f83833b02b4825374adb1dc6c0387ab1617788553");
+        const requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+        const data = await fetch(`https://jsonplaceholder.typicode.com/users/${page}`, requestOptions);
+        const result = await data.text();
+        console.log(JSON.parse(result));
+        setPage(page + 1);
+        setProfiles([...profiles,JSON.parse(result)]);
+        setLoading(false);
+        setLoadings(false);
       }
-      const myHeaders = new Headers();
-      myHeaders.append("Cookie", "__cfduid=d8f83833b02b4825374adb1dc6c0387ab1617788553");
-      const requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-      };
-      const data = await fetch(`https://jsonplaceholder.typicode.com/users/${page}`, requestOptions);
-      const result = await data.text();
-      console.log(JSON.parse(result));
-      setPage(page + 1);
-      setProfiles([...profiles,JSON.parse(result)]);
-      setLoading(false);
-    }
-    catch(error){
-      console.log(error);
-    }
+      catch(error){
+        console.log(error);
+      }
+    },1000)
   }
 
   useEffect(()=>{
@@ -103,10 +108,10 @@ function App() {
                       </Row>
                     </div>
                   </div>
+                  {loadings && <Loader />}
                 </Col>
               ))}
             </Row>
-            {isFetching && <Loader />}
             <Row style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
               {page >10 && <h6>No more users</h6>}
             </Row>
