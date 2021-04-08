@@ -80,10 +80,9 @@ function App() {
         <>
           <Container style={{paddingTop:"100px"}}>
             <Row style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
-              <div className="mb-5"></div>
               {profiles.map((listItem) => (
                 <Col xs={8}>
-                  <div className='card mb-3 p-2' key={listItem.id} style={{borderRadius:"20px"}}>
+                  <div className='card mb-3 p-2' key={listItem.id} style={{borderRadius:"20px", minHeight:"100vh"}}>
                     <Suspense fallback={<Loader />}>
                       <img src={`https://avatars.dicebear.com/api/male/${listItem.name}.svg?background=%230000ff`} style={{width:"100%", borderRadius:"20px"}} alt=""/>
                     </Suspense>
