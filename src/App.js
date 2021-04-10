@@ -1,8 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, Suspense } from 'react';
-import { Card, Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import './App.css';
 import Header from './components/Header';
+// import Image from './components/Image';
 import Loader from './components/Loader';
+const Image = React.lazy(() => import('./components/Image'));
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -32,14 +35,13 @@ function App() {
   },[isFetching])
 
   const fetchData = async ()=>{
+    if(page > 10){
+      return;
+    }
     setLoadings(true);
     setTimeout(async()=>{
       try{
         console.log("here");
-        if(page > 10){
-          setLoadings(false);
-          return;
-        }
         const myHeaders = new Headers();
         myHeaders.append("Cookie", "__cfduid=d8f83833b02b4825374adb1dc6c0387ab1617788553");
         const requestOptions = {
@@ -88,9 +90,10 @@ function App() {
             <Row style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
               {profiles.map((listItem) => (
                 <Col xs={8}>
-                  <div className='card mb-3 p-2' key={listItem.id} style={{borderRadius:"20px", minHeight:"100vh"}}>
+                  <div className='card mb-3 p-2' key={listItem.id} style={{borderRadius:"20px", minHeight:"130vh"}}>
                     <Suspense fallback={<Loader />}>
-                      <img src={`https://avatars.dicebear.com/api/male/${listItem.name}.svg?background=%230000ff`} style={{width:"100%", borderRadius:"20px"}} alt=""/>
+                      <Image name={listItem.name}/>
+                      {/* <img src={`https://avatars.dicebear.com/api/male/${listItem.name}.svg?background=%230000ff`} style={{width:"100%", borderRadius:"20px"}} alt=""/> */}
                     </Suspense>
 
                     <div className='container text-center mt-1'>
@@ -103,17 +106,18 @@ function App() {
                           <span style={{fontWeight:"500"}}>Id</span> : {listItem.id}
                         </Col>
                         <Col xs={6}>
-                          <span style={{fontWeight:"500"}}>Website</span> : <a href={listItem.website}>{listItem.website}</a><br/>
+                          <span style={{fontWeight:"500"}}>Website</span> : <a href={`https://www.${listItem.website}`}>{listItem.website}</a><br/>
                           <span style={{fontWeight:"500"}}>Username</span> : {listItem.username}
                         </Col>
                       </Row>
                     </div>
                   </div>
-                  {loadings && <Loader />}
+                  
                 </Col>
               ))}
             </Row>
             <Row style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+              {loadings && <Loader />}
               {page >10 && <h6>No more users</h6>}
             </Row>
           </Container>
